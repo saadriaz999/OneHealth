@@ -1,8 +1,18 @@
-from pydantic_settings import BaseSettings
 from functools import lru_cache
+from pathlib import Path
+
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+_ENV_FILE = Path(__file__).resolve().parent / ".env"
 
 
 class Settings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=_ENV_FILE,
+        env_file_encoding="utf-8",
+        extra="ignore",
+    )
+
     database_url: str
     secret_key: str
     algorithm: str = "HS256"
@@ -10,9 +20,6 @@ class Settings(BaseSettings):
 
     anthropic_api_key: str
     drugbank_api_key: str = ""
-
-    class Config:
-        env_file = ".env"
 
 
 @lru_cache()
